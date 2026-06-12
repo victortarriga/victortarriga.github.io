@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "WebFetch(domain:www.linkedin.com)",
+      "WebFetch(domain:rio.websummit.com)",
+      "WebFetch(domain:philipscheer.github.io)",
+      "Skill(run)",
+      "Skill(run:*)",
+      "Bash(chromium-cli --session portfolio)",
+      "Bash(npx playwright *)"
+    ]
+  }
+}
