@@ -1,26 +1,29 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import type { ReactNode } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import {
   Calendar, Award, Users, Star,
   Sun, Moon, Menu, X, Download, Copy, Check,
-  ChevronLeft, ChevronRight,
+  ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Share2, Link2,
 } from 'lucide-react'
-import { jsPDF } from 'jspdf'
 
 // ============================================================
 // FOTO DE PERFIL: coloque sua foto em /public/foto.jpg
 // e mude PROFILE_PHOTO = "/foto.jpg"
 // ============================================================
-const PROFILE_PHOTO = "/foto.jpg"
+const PROFILE_PHOTO = "/foto.webp"
+const PORTFOLIO_URL = 'https://victortarriga.github.io/'
+const SHARE_TEXT    = 'Conheça o portfólio de Victor Tarriga — Squad Leader | Scrum Master | Product Owner'
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
+const yearsExp = new Date().getFullYear() - 2005
+
 const kpis: { value: string; label: string; Icon: LucideIcon }[] = [
-  { value: '20+', label: 'Anos de Experiência', Icon: Calendar },
-  { value: '29',  label: 'Certificações',       Icon: Award    },
-  { value: '15K+', label: 'Seguidores LinkedIn', Icon: Users    },
-  { value: '7',   label: 'Recomendações',       Icon: Star     },
+  { value: `${yearsExp}+`, label: 'Anos de Experiência', Icon: Calendar },
+  { value: '29',           label: 'Certificações',       Icon: Award    },
+  { value: '15K+',         label: 'Seguidores LinkedIn', Icon: Users    },
+  { value: '7',            label: 'Recomendações',       Icon: Star     },
 ]
 
 const targetRoles = [
@@ -31,21 +34,66 @@ const targetRoles = [
   'Product Analyst Sênior',
 ]
 
+function calcPeriod(startLabel: string, startYear: number, startMonth: number): string {
+  const now = new Date()
+  const total = (now.getFullYear() - startYear) * 12 + (now.getMonth() + 1 - startMonth)
+  const years = Math.floor(total / 12)
+  const months = total % 12
+  const duration = years > 0
+    ? months > 0
+      ? `${years} ${years === 1 ? 'ano' : 'anos'} e ${months} ${months === 1 ? 'mês' : 'meses'}`
+      : `${years} ${years === 1 ? 'ano' : 'anos'}`
+    : `${total} ${total === 1 ? 'mês' : 'meses'}`
+  return `${startLabel}/${startYear} — atual · ${duration}`
+}
+
 const experiences = [
   {
-    role: 'Squad Leader | QA | Scrum Master',
+    role: 'Grupo OTG',
     company: 'Grupo OTG',
-    period: '2022 — atual · Tempo integral',
+    period: calcPeriod('ago', 2025, 8),
     current: true,
     compact: false,
-    badge: null as string | null,
-    bullets: [
-      'Squad Leader / QA — Projetos, Inovação & Tecnologia',
-      'Responsável pelo time ágil, priorizando e entregando os backlogs de diferentes projetos do Grupo OTG',
-      'Atuo assistindo e capacitando o Gaming para assumir e manter o compliance das normas de conformidade, junto ao time de desenvolvimento',
-      'Foco e Resultado: Gaming 3.0 é hoje um dos melhores produtos de gaming do Brasil',
-      'Scrum Master — Definição e Automação de Processos (co-criação)',
-      '73 premiações de produtos de destaque do Grupo OTG',
+    contract: 'PJ' as 'PJ' | 'CLT' | null,
+    badge: 'Remoto' as string | null,
+    bullets: [],
+    subroles: [
+      {
+        role: 'Squad Leader | QA - Projetos, Inovação e Tecnologia',
+        period: calcPeriod('fev', 2026, 2),
+        badge: 'São Paulo, SP' as string | null,
+        bullets: [
+          'Responsável pela estruturação, ampliação e sustentação da plataforma de afiliados do Grupo OTG, uma das principais holdings de mídia esportiva digital e investimentos esportivos do Brasil e América Latina.',
+          'Atuo no ecossistema de iGaming (apostas esportivas e entretenimento online), promovendo marcas premium com foco em escala sustentável e resultados consistentes.',
+          'Com contratos exclusivos, modelo híbrido, dados proprietários, controle antifraude avançado, account manager dedicado, gameficação e dashboards completos com suporte 24/7.',
+          'Eleita o Melhor Programa de Afiliados na BiS SiGMA América do Sul 2026.',
+          'O Grupo OTG é referência em mídia esportiva humanizada, liderado por empreendedores visionários como Lucas Tylty (Melhor Afiliado do Ano – BIS Awards 2025) e Rafael Gomes.',
+        ],
+      },
+      {
+        role: 'Scrum Master - Dados, Automações e Infraestrutura',
+        period: 'nov/2025 — abr/2026 · 6 meses',
+        badge: 'Cuiabá, MT' as string | null,
+        bullets: [
+          'Atuo em um ambiente focado em dados, analytics, inteligência artificial e ciência de dados.',
+          'Facilitando squads multidisciplinares que combinam engenharia de dados, cientistas de dados, analistas, infraestrutura e stakeholders.',
+        ],
+      },
+      {
+        role: 'Squad Leader - DevOps e Infraestrutura',
+        period: 'ago/2025 — abr/2026 · 9 meses',
+        badge: 'Cuiabá, MT' as string | null,
+        bullets: [
+          'Responsável pela estratégia, governança e evolução da infraestrutura, com foco em eficiência operacional, confiabilidade, monitoramento e otimização de custos em nuvem.',
+          'Atuação orientada a resultados e impacto direto no negócio, conectando decisões técnicas à sustentabilidade financeira, escala segura e continuidade operacional.',
+          'Redução de aproximadamente 80% nos custos de AWS, por meio de reestruturação completa da arquitetura, eliminação de desperdícios, revisão de contratos e adoção de práticas de FinOps — gerando economia recorrente e previsibilidade orçamentária.',
+          'Liderança da reorganização da arquitetura cloud, com segregação de ambientes (DEV, STAGE [QA] e PROD) em contas distintas — elevando segurança, performance, governança e controle financeiro.',
+          'Definição e execução de estratégia de confiabilidade (SRE): redução de riscos operacionais, observabilidade aprimorada e maior estabilidade dos serviços críticos.',
+          'Condução de decisões arquiteturais estratégicas — migrações de bancos de dados e racionalização de serviços, equilibrando custo, desempenho e risco.',
+          'Estruturação de processos DevOps e automação, acelerando entregas, reduzindo falhas humanas e aumentando a maturidade operacional da plataforma.',
+          'Fortalecimento de governança, segurança e compliance em ambientes cloud, com revisão de acessos, responsabilidades e padrões operacionais.',
+        ],
+      },
     ],
   },
   {
@@ -54,116 +102,131 @@ const experiences = [
     period: 'set/2022 — ago/2025 · 3 anos',
     current: false,
     compact: false,
-    badge: 'Terceirizado · Híbrido',
+    contract: 'PJ' as 'PJ' | 'CLT' | null,
+    badge: 'Terceirizado · Remoto' as string | null,
+    loc: 'São Paulo, SP' as string | null,
     bullets: [
-      'PO Sênior dos e-commerces da Deca, Casttelato, Portinari, Durafloor, Duratex, Hudra e Ceusa',
-      '48 mil tickets gerenciados · Portfolio de R$26M+ em projetos',
-      'Garante mais de 12M de visitas/mês nos e-commerces',
-      'Responsável por 30% do crescimento do faturamento digital da Deca, Portinari e Ceusa',
-      'Introduziu kanban e rituais de 30 min/semana por área para transparência de pedidos',
-      'Metodologia: Scrum · VTEX · Agile',
+      'Liderei o desenvolvimento e evolução dos e-commerces B2C e B2E, gerenciando um ecossistema entre plataformas VTEX, ERP Linx e Millennium, Seller Center Omnik, meio de pagamentos Pagar.me, Salesforce, Zendesk, Talkdesk e GA4, garantindo a operação fluida de um ambiente de alta demanda. Integrei APIs RESTful, reduzindo significativamente a latência de sincronização de dados e melhorando a experiência do cliente.',
+      'Introduzi benchmarks internacionais de UX, inspirados em mercados como EUA, Europa e Ásia, redesenhando o layout do front-end e implantando ferramentas como compre junto, comparador de produtos, calculadora de metragem, AR, filtros avançados, chatbot, Live & Video Commerce e visualização 3D — elevando a retenção de usuários de forma significativa.',
+      'Liderei customizações avançadas no checkout VTEX com ReactJS, TypeScript e SCSS: vitrine de cross-selling e seletor de data de entrega otimizado — reduzindo cliques e melhorando a usabilidade.',
+      'Colaborei com o time de negócios na estratégia de campanhas digitais baseada em GA4 e Power BI, liderando a implantação do Insider, otimizando preços, promoções e cupons com A/B Testing e SEO — redução de 20% na taxa de abandono de carrinho em 6 meses.',
+      'Implantei Scrum e Kanban com Jira, Trello e Asana para squads multifuncionais (19 pessoas) — produtividade +30%, tempo de entrega de novas funcionalidades -40%.',
+      'Implementei monitoramento de sistemas com UptimeRobot para os e-commerces B2C e B2E da Dexco, garantindo alta disponibilidade e identificando falhas proativamente.',
     ],
   },
   {
-    role: 'Startup Specialist / Tech Recruiter',
-    company: 'e-volve.in',
-    period: '02/2021 — atual · Tempo integral',
+    role: 'Product Owner Sênior',
+    company: 'Talent Four Consulting',
+    period: 'set/2022 — ago/2025 · 3 anos',
     current: false,
     compact: false,
-    badge: null as string | null,
+    contract: 'PJ' as 'PJ' | 'CLT' | null,
+    badge: 'Remoto' as string | null,
+    loc: null as string | null,
     bullets: [
-      'Especialista em startups com atuação no Brasil, EUA e Europa',
-      'Atração e seleção dos melhores profissionais de tecnologia',
+      'Atuei como consultor Product Owner Sênior na Dexco, definindo e priorizando visões de produto e roadmaps, alinhando expectativas de stakeholders com entregas técnicas em projetos simultâneos.',
+      'Atuei como Product Owner e Scrum Master na validação de MVPs para os e-commerces B2C e B2E da Dexco, coordenando cerimônias ágeis e priorizando backlogs para testar conceitos de produto — viabilizando a escalação de soluções de alto impacto para produção.',
+      'Mentorei Product Owners como Scrum Master, conduzindo workshops de Scrum e Design Thinking que aprimoraram a escrita de user stories e a colaboração em cerimônias ágeis, elevando a eficiência das equipes.',
     ],
   },
   {
-    role: 'Angel Investor',
-    company: 'e-volve.ac Aceleradora',
-    period: '02/2021 — atual',
+    role: 'Squad Leader Sênior',
+    company: 'e-volve.one',
+    period: 'fev/2021 — ago/2022 · 1 ano 7 meses',
     current: false,
     compact: false,
-    badge: null as string | null,
+    contract: 'PJ' as 'PJ' | 'CLT' | null,
+    badge: 'Remoto' as string | null,
+    loc: 'Campinas, SP' as string | null,
     bullets: [
-      'Apoio desde captação de investimento até estruturação de times-chave',
-      'Mentor e conselheiro estratégico de startups em fase de aceleração',
-      'Avaliação de oportunidades de investimento e acompanhamento de portfólio',
-    ],
-  },
-  {
-    role: 'Mentor de Startups | Business Advisor | Legal Advisor',
-    company: 'Autônomo',
-    period: 'out/2018 — atual',
-    current: false,
-    compact: false,
-    badge: null as string | null,
-    bullets: [
-      'Ajudando startups de todos os setores a se estruturar e gerar valor',
-      'Implantação de projetos de forma estratégica',
-    ],
-  },
-  {
-    role: 'Analista de Inovações (Product Owner)',
-    company: 'Restoque S/A',
-    period: 'fev/2020 — abr/2020 · (COVID-19)',
-    current: false,
-    compact: false,
-    badge: null as string | null,
-    bullets: [
-      'PO em times ágeis com Scrum: backlog, user stories e critérios de aceite',
-      'Condução das cerimônias: Planning, Daily, Review, Retrospectiva',
-      'Homologação de entregas e status report',
-      'Criação de dashboards, roadmaps e análise de métricas',
-      'Design Thinking, Discovery e Inception com times de UX',
-      '10 áreas de produto',
+      'Gerenciei a conexão de mais de 100 talentos tech (desenvolvedores, designers, engenheiros de dados, DevOps, SREs e C-levels) com startups da América do Sul, EUA e Europa, reduzindo o ciclo de contratação e agilizando o processo de alocação.',
+      'Estruturei processos ágeis para squads de recrutamento com Kanban e Scrum, aumentando a taxa de conversão de candidatos.',
+      'Desenvolvi uma base de dados de benchmarking de skills globais para alinhar perfis técnicos a demandas de mercado, elevando a satisfação dos clientes.',
+      'Liderei iniciativas de diversidade, atraindo mais profissionais sub-representados em tecnologia para projetos estratégicos, promovendo equipes mais inclusivas.',
+      'Conduzi workshops para recrutadores não técnicos sobre hard skills em desenvolvimento de software, aprimorando a qualidade das contratações e a comunicação com candidatos técnicos.',
     ],
   },
   {
     role: 'Promotor de Produtos',
-    company: 'Porto Seguro',
-    period: 'dez/2020 — fev/2021',
+    company: 'Porto',
+    period: 'dez/2020 — fev/2021 · 3 meses',
     current: false,
     compact: false,
-    badge: null as string | null,
+    contract: 'CLT' as 'PJ' | 'CLT' | null,
+    badge: 'Temporário · Remoto' as string | null,
+    loc: 'São Paulo, SP' as string | null,
     bullets: [
-      'Promoção e comercialização de produtos e serviços',
-      'Relacionamento com clientes e parceiros estratégicos',
+      'Promovi e divulguei produtos através de redes sociais, blogs e outros canais digitais.',
+      'Criei, editei e publiquei conteúdos personalizados em mídias digitais, otimizando-os para motores de busca e gerando leads.',
+    ],
+  },
+  {
+    role: 'Analista de Inovações',
+    company: 'Restoque S/A',
+    period: 'fev/2020 — abr/2020 · 3 meses',
+    current: false,
+    compact: false,
+    contract: 'CLT' as 'PJ' | 'CLT' | null,
+    badge: 'Tempo integral · Híbrido' as string | null,
+    loc: 'São Paulo, SP' as string | null,
+    bullets: [
+      'Desenvolvi junto com o time de dados dashboards automatizados em Looker Studio, utilizando Python e SQL para sete departamentos (diretoria, financeiro, RH, compras, atendimento, logística e marketing) — reduzindo o tempo de análise operacional de 24 horas para real time.',
+      'Liderança nas cerimônias Scrum (Sprint Planning, Daily Scrums, Sprint Review, Retrospectives e Refinement) com definição e acompanhamento de OKRs.',
+      'Facilitei sessões de refinamento de backlog técnico, colaborando com desenvolvedores para detalhar requisitos de integração e garantir entregas de alta qualidade.',
+    ],
+  },
+  {
+    role: 'Consultor de Produtos Digitais',
+    company: 'Autônomo',
+    period: 'out/2018 — jan/2020 · 1 ano 4 meses',
+    current: false,
+    compact: false,
+    contract: 'PJ' as 'PJ' | 'CLT' | null,
+    badge: 'Autônomo' as string | null,
+    loc: null as string | null,
+    bullets: [
+      'Liderei projetos de implantação de sistemas contábeis e financeiros para empresas de diversos setores, otimizando a gestão financeira e garantindo conformidade com padrões regulatórios.',
+      'Colaborei com equipes internas e stakeholders para mapear necessidades e customizar soluções contábeis, melhorando a eficiência operacional e a tomada de decisão.',
+      'Implementei boas práticas de gestão de projetos, assegurando a entrega de sistemas dentro do escopo e com alta adesão por parte dos usuários finais.',
     ],
   },
   {
     role: 'Analista Contábil',
-    company: 'C Castellar Contabilidade',
-    period: 'jan/2017 — set/2018 · 1 ano e 9 meses',
+    company: 'Castellar Assis Contabilidade LTDA',
+    period: 'jan/2017 — set/2018 · 1 ano 9 meses',
     current: false,
-    compact: false,
-    badge: null as string | null,
+    compact: true,
+    contract: 'CLT' as 'PJ' | 'CLT' | null,
+    badge: 'Tempo integral' as string | null,
+    loc: 'Santo André, SP' as string | null,
     bullets: [
-      'Registros contábeis e conciliações',
-      'Balancetes e demonstrativos',
-      'Emissão de notas, apuração de impostos e obrigações acessórias',
+      'Atuei nas áreas contábil, fiscal e financeira, garantindo a precisão e conformidade das operações e relatórios financeiros. Desempenhei funções cruciais no controle e análise de dados contábeis e fiscais, bem como na elaboração e revisão de demonstrações contábeis, financeiras e fiscais. Contribuí para a eficiência financeira por meio da implementação e monitoramento de processos e controles internos, assegurando a conformidade com as regulamentações e políticas vigentes.',
     ],
   },
   {
     role: 'Assistente Contábil',
-    company: 'Unihosp Saúde',
-    period: 'abr/2014 — fev/2016 · 1 ano e 11 meses',
+    company: 'UniHosp Saúde',
+    period: 'abr/2014 — fev/2016 · 1 ano 11 meses',
     current: false,
-    compact: false,
-    badge: null as string | null,
+    compact: true,
+    contract: 'CLT' as 'PJ' | 'CLT' | null,
+    badge: 'Tempo integral' as string | null,
+    loc: 'Santo André, SP' as string | null,
     bullets: [
-      'Gestão de licenças especiais na área da saúde',
-      'Vigilância sanitária, alvarás, certidões',
-      'Atendimento à auditoria interna e externa',
+      'Atuei nas áreas paralegal e contábil, desempenhando um papel essencial na assistência jurídica e na gestão de processos contábeis. Na área paralegal, suporte jurídico incluía a preparação e revisão de documentos legais, pesquisa de legislação e auxílio na elaboração de estratégias jurídicas. Na área contábil, fui responsável pela manutenção e análise de registros financeiros, elaboração de relatórios contábeis e fiscais, e garantia da conformidade com as normas e regulamentos contábeis.',
     ],
   },
   {
-    role: 'Auxiliar',
-    company: 'Yalazu Serviços',
-    period: 'fev/2005 — dez/2013 · 8 anos e 11 meses',
+    role: 'Auxiliar de Escritório',
+    company: 'Yalazu Serviços Especializados de Apoio Administrativo Ltda',
+    period: 'fev/2005 — dez/2013 · 8 anos 11 meses',
     current: false,
     compact: true,
-    badge: null as string | null,
+    contract: 'CLT' as 'PJ' | 'CLT' | null,
+    badge: 'Tempo integral' as string | null,
+    loc: 'Santo André, SP' as string | null,
     bullets: [
-      'Coordenação da equipe paralegal em escopo jurídico e financeiro',
+      'Atuei na área paralegal, prestando suporte jurídico essencial através da preparação e revisão de documentos legais, realização de pesquisas de legislação e apoio na elaboração de estratégias jurídicas. Minha experiência envolveu a organização e manutenção de arquivos jurídicos, auxílio na preparação de processos e na coordenação de comunicação entre advogados e clientes. Contribuí significativamente para a eficiência e precisão das operações jurídicas, garantindo conformidade com regulamentos e prazos estabelecidos.',
     ],
   },
 ]
@@ -212,7 +275,6 @@ const certifications = [
   { name: 'Gestão de Relacionamento com Clientes',       issuer: 'HP LIFE',         year: '—'         },
   { name: 'CertiProf Continuous Learner',                issuer: 'CertiProf',       year: '—'         },
 ]
-const CERT_PAGES = Math.ceil(certifications.length / 6)
 
 const recommendations = [
   {
@@ -220,7 +282,7 @@ const recommendations = [
     role: 'Product Manager Sênior | Gerente de E-commerce VTEX',
     relation: 'Trabalharam na Dexco · fev/2025',
     linkedinUrl: 'https://www.linkedin.com/in/juanfirminoribeiro/',
-    photo: '/rec/juan.jpg',
+    photo: '/rec/juan.webp',
     initials: 'JF',
     text: 'Trabalhar com o Victor na Dexco foi uma experiência incrível. Além de ser um profissional extremamente qualificado, ele sempre foi um parceiro de trabalho com quem pude contar. Como Product Owner na área de tech, ele foi essencial para a sustentação, principalmente na frente de conteúdo, garantindo que os processos corressem de forma fluida e que as melhorias fossem implementadas com estratégia e eficiência. O Victor tem um olhar analítico e um conhecimento profundo sobre o negócio, tecnologia e VTEX, o que fazia toda a diferença no dia a dia, sempre zelando por processos e metodologias ágeis, como Scrum. Ele sabia traduzir as necessidades do time com soluções viáveis e com uma abordagem estruturada. Além disso, sua habilidade em conectar diferentes áreas e facilitar a comunicação entre stakeholders e a agência de desenvolvimento foi um diferencial enorme, fez com que muitas melhorias fossem implementadas sem necessidade de correção. Sem dúvida, é alguém que agrega valor a qualquer equipe e entrega com excelência. Recomendo fortemente!',
   },
@@ -229,7 +291,7 @@ const recommendations = [
     role: 'Squad Leader | Product Owner | VTEX | E-commerce',
     relation: 'Trabalharam juntos na Dexco · ~2 anos · fev/2025',
     linkedinUrl: 'https://www.linkedin.com/in/bruno-bonacini-9a45787a/',
-    photo: '/rec/bruno.jpg',
+    photo: '/rec/bruno.webp',
     initials: 'BB',
     text: 'Tive o prazer de trabalhar junto ao Victor durante aproximadamente 2 anos. E nesse período, é notável seu vasto conhecimento técnico, não só na área de TI mas também na gestão de produtos. Durante esses 2 anos, compartilhamos de muitos conhecimentos, metodologia, e trocas extremamente produtivas no dia a dia. Apesar de estarmos em empresas diferentes, sempre buscamos o mesmo objetivo: Entregar um produto de muito sucesso à Dexco. O senso de solução de problemas combinado com a empatia com o time técnico, com certeza é um grande diferencial do Victor! Sua comunicação é clara e objetiva, com todo seu embasamento técnico. Parabéns pelo profissional que és Victor, desejo a você muito sucesso em sua jornada!',
   },
@@ -238,7 +300,7 @@ const recommendations = [
     role: 'International Expansion & Startup Specialist · e-volve',
     relation: 'Gestor direto de Victor · dez/2024',
     linkedinUrl: 'https://www.linkedin.com/in/esdrasscaramuzzapadial/',
-    photo: '/rec/esdras.jpg',
+    photo: '/rec/esdras.webp',
     initials: 'ES',
     text: 'Prazer enorme em ter trabalhado com o Victor! Fui gestor do Victor por mais de um ano e, apesar de nunca ter feito o que a empresa fazia, teve um ótimo desenvolvimento, organizado, ajudou em várias questões da empresa. O Victor é parceiro, honesto e autêntico que fala suas ideias. Isso surpreendeu a todos e com pouco tempo de empresa, assim que expressou suas ideias pela primeira vez já gerou grandes mudanças! Por esta postura ativa, o Victor ganhou notoriedade em seus comentários e confiança de toda a gestão da empresa. Temos hoje uma geração anêmica frente aos problemas em geral e o Victor destoa disto. Obrigado Vitão, foi um prazer. Espero que os caminhos se cruzem novamente em algum momento.',
   },
@@ -247,7 +309,7 @@ const recommendations = [
     role: 'Analista de Marketing Digital | Planejamento de Campanhas | Branding',
     relation: 'Trabalharam juntos na Dexco · nov/2024',
     linkedinUrl: 'https://www.linkedin.com/in/leticia-marques-0373a315a/',
-    photo: '/rec/leticia.jpg',
+    photo: '/rec/leticia.webp',
     initials: 'LM',
     text: 'O Victor é o P.O ideal para qualquer equipe. Durante o tempo em que trabalhamos juntos, ele sempre demonstrou uma compreensão profunda das necessidades da área de negócios que eu demandava junto com a equipe e mantendo um equilíbrio com o time de tecnologia, entendendo o que pode ser feito. Ele busca entender a fundo as demandas e se empenha em facilitar o dia a dia, garantindo que os objetivos sejam alcançados com eficiência. Ele tem um sólido conhecimento da VTEX e grande domínio técnico da ferramenta, Victor se destaca pela agilidade e habilidade em encontrar soluções rápidas e eficazes — algo essencial no universo do e-commerce.',
   },
@@ -256,7 +318,7 @@ const recommendations = [
     role: 'Experiência do Cliente (CX) | UX & Jornada do cliente | CRM & Growth',
     relation: 'Mesma equipe na Deca/Dexco · fev/2024',
     linkedinUrl: 'https://www.linkedin.com/in/mariana-molino-068134144/',
-    photo: '/rec/mariana.jpg',
+    photo: '/rec/mariana.webp',
     initials: 'MM',
     text: 'Trabalho em parceria com o Vi no setor de E-commerce B2B2C da Deca, e posso afirmar que, como Product Owner de TI, ele se destaca por sua notável capacidade analítica. É habilidoso em examinar, entender e interpretar informações de maneira detalhada e sistemática, tornando fácil a compreensão dos desafios técnicos. Sua competência vai além do aspecto técnico, abrangendo uma compreensão lógica de negócios relacionados aos projetos e suas aplicações no contexto do e-commerce. Ele não apenas domina a plataforma VTEX, mas também responde de maneira ágil às demandas emergentes. No ambiente de equipe, Vi é reconhecido por sua colaboração constante, promovendo um espaço respeitoso e cooperativo. Trabalhar com o Victor torna o dia a dia não apenas mais fácil, mas também agradável.',
   },
@@ -265,7 +327,7 @@ const recommendations = [
     role: 'Gerente de Tecnologia | Arquiteto de Soluções | Produtos Digitais',
     relation: 'Gestor direto de Victor · out/2022',
     linkedinUrl: 'https://www.linkedin.com/in/philip-scheer-52752218/',
-    photo: '/rec/philip.jpg',
+    photo: '/rec/philip.webp',
     initials: 'PS',
     text: 'Victor sempre foi um profissional inteligente, dedicado e resiliente. Nos projetos que trabalhamos, sempre se esforçou para entregar o melhor produto aos clientes, sendo proativo e mostrando ter conhecimento ímpar sobre o que era discutido e criado. Assumindo desafios com a cabeça erguida e ajudando seus colegas em diversas situações. É uma pessoa que se importa com todos e sempre busca o melhor para cada um. Muito fácil de se trabalhar no dia a dia, sabe trabalhar em equipe e gerenciar a mesma de uma forma natural. É um profissional fantástico para qualquer time!',
   },
@@ -274,7 +336,7 @@ const recommendations = [
     role: 'Agilista | Analista de Negócios & Requisitos TI | Professor FIAP',
     relation: 'Mesma equipe · jun/2020',
     linkedinUrl: 'https://www.linkedin.com/in/fabio-campos-07429221/',
-    photo: '/rec/fabio.jpg',
+    photo: '/rec/fabio.webp',
     initials: 'FC',
     text: 'Victor é um profissional de extrema competência que faz da qualidade uma de suas principais características. Atendendo aos prazos e mínimos detalhes, sempre se preocupou em ir além e superar quaisquer expectativas. Dedicado e inteligente, possui uma excelente capacidade de arguição, além de visão estratégica e habilidades excelentes para trabalhar em grupo!',
   },
@@ -293,7 +355,8 @@ const SECTION_IDS = navLinks.map(l => l.href.slice(1))
 
 // ─── PDF Generator ───────────────────────────────────────────────────────────
 
-function downloadCV() {
+async function downloadCV() {
+  const { jsPDF } = await import('jspdf')
   const doc = new jsPDF({ unit: 'mm', format: 'a4' })
   const W = 210
   const ml = 18
@@ -354,27 +417,49 @@ function downloadCV() {
   // ── Resumo ──
   section('RESUMO PROFISSIONAL')
   txt(
-    'Profissional com mais de 20 anos de experiência, incluindo 12 anos em contabilidade antes de migrar para tecnologia e produtos digitais. Formado em Análise e Desenvolvimento de Sistemas e Ciências Contábeis. Atuei como Squad Leader, Scrum Master e Product Owner Sênior em Grupo OTG e Dexco, sempre na interseção entre negócio, tecnologia e pessoas.',
+    'Profissional com mais de 20 anos de experiência, incluindo 12 anos em contabilidade antes de migrar para tecnologia e produtos digitais. Formado em Análise e Desenvolvimento de Sistemas e Ciências Contábeis. Atuo como Squad Leader, Scrum Master e Product Owner Sênior no Grupo OTG. Fui PO Sênior na Dexco por 3 anos, liderando e-commerces com 12M+ visitas/mês. Sempre na interseção entre negócio, tecnologia e pessoas.',
     9, 'normal', '#333333',
   )
 
   // ── Experiência ──
   section('EXPERIÊNCIA PROFISSIONAL')
   for (const exp of experiences) {
-    checkPage(16)
-    txt(exp.role, 10, 'bold', '#111111')
-    gap(1)
-    txt(`${exp.company}  |  ${exp.period}`, 8, 'normal', '#666666')
-    gap(1)
-    if (exp.compact) {
-      txt(exp.bullets[0], 8, 'normal', '#444444')
-    } else {
-      for (const b of exp.bullets) {
-        txt(`•  ${b}`, 8, 'normal', '#444444')
-        gap(0.5)
+    if ('subroles' in exp) {
+      checkPage(14)
+      txt(exp.company, 11, 'bold', '#111111')
+      gap(1)
+      txt(exp.period, 8, 'normal', '#888888')
+      gap(2)
+      const subs = (exp as { subroles: { role: string; period: string; badge: string | null; bullets: string[] }[] }).subroles
+      for (const sub of subs) {
+        checkPage(12)
+        txt(sub.role, 10, 'bold', '#333333')
+        gap(1)
+        txt(sub.period + (sub.badge ? `  ·  ${sub.badge}` : ''), 8, 'normal', '#888888')
+        gap(1)
+        for (const b of sub.bullets) {
+          txt(`    •  ${b}`, 8, 'normal', '#444444')
+          gap(0.5)
+        }
+        gap(2)
       }
+      gap(1)
+    } else {
+      checkPage(16)
+      txt(exp.role, 10, 'bold', '#111111')
+      gap(1)
+      txt(`${exp.company}  |  ${exp.period}`, 8, 'normal', '#666666')
+      gap(1)
+      if (exp.compact) {
+        txt(exp.bullets[0], 8, 'normal', '#444444')
+      } else {
+        for (const b of exp.bullets) {
+          txt(`•  ${b}`, 8, 'normal', '#444444')
+          gap(0.5)
+        }
+      }
+      gap(3)
     }
-    gap(3)
   }
 
   // ── Formação ──
@@ -474,12 +559,37 @@ function useClipboard(duration = 2000) {
 }
 
 function useDarkMode() {
-  const [isDark, setIsDark] = useState(true)
+  const [isDark, setIsDark] = useState(
+    () => window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? true
+  )
   useEffect(() => {
     document.documentElement.classList.toggle('light', !isDark)
   }, [isDark])
   const toggle = useCallback(() => setIsDark(v => !v), [])
   return { isDark, toggle }
+}
+
+function useIsMobile(bp = 768) {
+  const [v, setV] = useState(() => window.innerWidth < bp)
+  useEffect(() => {
+    const h = () => setV(window.innerWidth < bp)
+    window.addEventListener('resize', h)
+    return () => window.removeEventListener('resize', h)
+  }, [bp])
+  return v
+}
+
+function useSwipe(onNext: () => void, onPrev: () => void, threshold = 40) {
+  const startX = useRef<number | null>(null)
+  return {
+    onTouchStart: (e: React.TouchEvent) => { startX.current = e.touches[0].clientX },
+    onTouchEnd: (e: React.TouchEvent) => {
+      if (startX.current === null) return
+      const dx = e.changedTouches[0].clientX - startX.current
+      if (Math.abs(dx) > threshold) dx < 0 ? onNext() : onPrev()
+      startX.current = null
+    },
+  }
 }
 
 // ─── App ─────────────────────────────────────────────────────────────────────
@@ -489,26 +599,47 @@ export default function App() {
   const { copied, copy } = useClipboard()
   const { isDark, toggle: toggleDark } = useDarkMode()
   const [mobileOpen, setMobileOpen]   = useState(false)
+  const isMobile = useIsMobile()
   const [sobreExpanded, setSobreExpanded] = useState(false)
   const [skillPage,  setSkillPage]    = useState(0)
-  const [skillVisible,setSkillVisible]= useState(true)
+  const [skillDir,   setSkillDir]     = useState<'next'|'prev'>('next')
   const [certPage,   setCertPage]     = useState(0)
-  const [certVisible,setCertVisible]  = useState(true)
+  const [certDir,    setCertDir]      = useState<'next'|'prev'>('next')
   const [recPage,    setRecPage]      = useState(0)
-  const [recVisible, setRecVisible]   = useState(true)
+  const [recDir,     setRecDir]       = useState<'next'|'prev'>('next')
 
-  const goToSkillPage = (newPage: number) => {
-    setSkillVisible(false)
-    setTimeout(() => { setSkillPage(newPage); setSkillVisible(true) }, 150)
+  // Responsive carousel sizes
+  const certsPerPage  = isMobile ? 4 : 6
+  const certTotalPages = Math.ceil(certifications.length / certsPerPage)
+  const recsPerPage   = isMobile ? 1 : 2
+  const recTotalPages = Math.ceil(recommendations.length / recsPerPage)
+  const recPageItems  = recommendations.slice(recPage * recsPerPage, recPage * recsPerPage + recsPerPage)
+
+  // Reset pages when switching mobile/desktop
+  useEffect(() => { setCertPage(0); setRecPage(0) }, [isMobile])
+
+  const goToSkillPage = (newPage: number, dir: 'next'|'prev' = 'next') => {
+    setSkillDir(dir); setSkillPage(newPage)
   }
-  const goToCertPage = (newPage: number) => {
-    setCertVisible(false)
-    setTimeout(() => { setCertPage(newPage); setCertVisible(true) }, 150)
+  const goToCertPage = (newPage: number, dir: 'next'|'prev' = 'next') => {
+    setCertDir(dir); setCertPage(newPage)
   }
-  const goToRecPage = (newPage: number) => {
-    setRecVisible(false)
-    setTimeout(() => { setRecPage(newPage); setRecVisible(true) }, 150)
+  const goToRecPage = (newPage: number, dir: 'next'|'prev' = 'next') => {
+    setRecDir(dir); setRecPage(newPage)
   }
+  const skillSwipe = useSwipe(
+    () => goToSkillPage((skillPage + 1) % skillGroups.length, 'next'),
+    () => goToSkillPage((skillPage + skillGroups.length - 1) % skillGroups.length, 'prev'),
+  )
+  const certSwipe = useSwipe(
+    () => goToCertPage((certPage + 1) % certTotalPages, 'next'),
+    () => goToCertPage((certPage + certTotalPages - 1) % certTotalPages, 'prev'),
+  )
+  const recSwipe = useSwipe(
+    () => goToRecPage((recPage + 1) % recTotalPages, 'next'),
+    () => goToRecPage((recPage + recTotalPages - 1) % recTotalPages, 'prev'),
+  )
+
   const { output: tagline, done: taglineDone } = useTypewriter(
     'Transformo times em máquinas de entrega de produto.',
   )
@@ -524,6 +655,16 @@ export default function App() {
       className="min-h-screen font-sans antialiased transition-colors duration-300"
       style={{ background: 'var(--bg)' }}
     >
+      <a
+        href="#sobre"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-1/2 focus:-translate-x-1/2 focus:z-[200] focus:bg-orange-500 focus:text-white focus:px-4 focus:py-2 focus:rounded-full focus:text-sm focus:font-bold focus:shadow-lg"
+      >
+        Pular para o conteúdo
+      </a>
+
+      <ScrollProgress />
+      <ScrollToTop />
+
       {/* ── Floating nav ──────────────────────────────────────────────── */}
       <header className="fixed top-5 left-0 right-0 z-50 pointer-events-none">
         <div className="max-w-6xl mx-auto px-5 flex justify-center items-center gap-2">
@@ -553,6 +694,15 @@ export default function App() {
               {l.label}
             </a>
           ))}
+
+          {/* Theme toggle — inside pill, mobile only */}
+          <button
+            onClick={toggleDark}
+            className="md:hidden w-8 h-8 flex items-center justify-center rounded-full text-neutral-400 hover:text-white light:hover:text-neutral-900 hover:bg-white/[0.06] light:hover:bg-black/[0.06] transition-all"
+            aria-label="Alternar tema"
+          >
+            {isDark ? <Sun size={14} /> : <Moon size={14} />}
+          </button>
 
           {/* Mobile hamburger — inside pill */}
           <button
@@ -617,22 +767,6 @@ export default function App() {
               ))}
             </div>
 
-            {/* Theme toggle inside drawer */}
-            <div
-              className="flex items-center justify-between px-4 py-3 rounded-xl mt-4"
-              style={{ border: '1px solid var(--border)' }}
-            >
-              <span className="text-sm font-semibold text-neutral-500">
-                {isDark ? 'Modo escuro' : 'Modo claro'}
-              </span>
-              <button
-                onClick={toggleDark}
-                className="w-8 h-8 flex items-center justify-center rounded-full text-neutral-400 hover:text-white light:hover:text-neutral-900 hover:bg-white/10 light:hover:bg-black/10 transition-all"
-              >
-                {isDark ? <Sun size={15} /> : <Moon size={15} />}
-              </button>
-            </div>
-
             <a
               href="#contato"
               onClick={() => setMobileOpen(false)}
@@ -663,11 +797,17 @@ export default function App() {
                 {/* Avatar + status */}
                 <div className="flex items-center gap-4 mb-6">
                   {PROFILE_PHOTO ? (
-                    <img
-                      src={PROFILE_PHOTO}
-                      alt="Victor Tarriga"
-                      className="w-20 h-20 rounded-2xl object-cover flex-shrink-0 shadow-lg ring-2 ring-orange-500/20"
-                    />
+                    <div className="relative flex-shrink-0">
+                      <div
+                        className="absolute rounded-[18px] ring-2 ring-orange-500/40 photo-ring pointer-events-none"
+                        style={{ inset: '-4px' }}
+                      />
+                      <img
+                        src={PROFILE_PHOTO}
+                        alt="Victor Tarriga"
+                        className="w-20 h-20 rounded-2xl object-cover shadow-lg ring-2 ring-orange-500/20"
+                      />
+                    </div>
                   ) : (
                     <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-700 flex items-center justify-center flex-shrink-0 shadow-lg shadow-orange-500/30">
                       <span className="text-2xl font-black text-white tracking-tight">VT</span>
@@ -690,15 +830,7 @@ export default function App() {
                 <div className="pb-3 mb-2">
                   <h1
                     className="text-4xl md:text-5xl font-black tracking-tighter leading-[1.1]"
-                    style={{
-                      background: isDark
-                        ? 'linear-gradient(135deg, #ffffff 0%, #f5f5f5 40%, #737373 100%)'
-                        : 'linear-gradient(135deg, #171717 0%, #404040 40%, #737373 100%)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      backgroundClip: 'text',
-                      color: isDark ? '#ffffff' : '#171717',
-                    }}
+                    style={{ color: isDark ? '#ffffff' : '#171717' }}
                   >
                     Victor Hugo Tarriga Gomes
                   </h1>
@@ -725,55 +857,46 @@ export default function App() {
                 </p>
 
                 {/* CTAs */}
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-col md:flex-row md:flex-wrap gap-3">
                   <a
                     href="mailto:victor.tarriga@gmail.com"
-                    className="inline-flex items-center gap-2 text-sm font-bold bg-orange-500 hover:bg-orange-400 text-white px-5 py-2.5 rounded-xl transition-colors duration-150"
+                    className="flex items-center justify-center gap-2 text-sm font-bold bg-orange-500 hover:bg-orange-400 text-white px-5 py-2.5 rounded-xl transition-colors duration-150 md:w-auto"
                   >
                     <EmailIcon /> Fale comigo
                   </a>
-                  <button
-                    onClick={downloadCV}
-                    className="inline-flex items-center gap-2 text-sm font-semibold border text-neutral-400 hover:text-white light:hover:text-neutral-900 px-5 py-2.5 rounded-xl transition-all duration-150"
-                    style={{ borderColor: 'var(--border)' }}
-                  >
-                    <Download size={14} /> Baixar CV
-                  </button>
-                  <a
-                    href="https://linkedin.com/in/victortarriga"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-sm font-semibold border text-neutral-400 hover:text-white light:hover:text-neutral-900 px-5 py-2.5 rounded-xl transition-all duration-150"
-                    style={{ borderColor: 'var(--border)' }}
-                  >
-                    <LinkedInIcon /> LinkedIn
-                  </a>
-                  <a
-                    href="https://github.com/victortarriga"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-sm font-semibold border text-neutral-400 hover:text-white light:hover:text-neutral-900 px-5 py-2.5 rounded-xl transition-all duration-150"
-                    style={{ borderColor: 'var(--border)' }}
-                  >
-                    <GitHubIcon /> GitHub
-                  </a>
+                  <div className="grid grid-cols-3 gap-2 md:contents">
+                    <button
+                      onClick={downloadCV}
+                      className="flex items-center justify-center gap-1.5 text-sm font-semibold border text-neutral-400 hover:text-white light:hover:text-neutral-900 px-3 py-2.5 rounded-xl transition-all duration-150"
+                      style={{ borderColor: 'var(--border)' }}
+                    >
+                      <Download size={14} /> <span className="hidden sm:inline">Baixar</span> CV
+                    </button>
+                    <a
+                      href="https://linkedin.com/in/victortarriga"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-1.5 text-sm font-semibold border text-neutral-400 hover:text-white light:hover:text-neutral-900 px-3 py-2.5 rounded-xl transition-all duration-150"
+                      style={{ borderColor: 'var(--border)' }}
+                    >
+                      <LinkedInIcon /> LinkedIn
+                    </a>
+                    <a
+                      href="https://github.com/victortarriga"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-1.5 text-sm font-semibold border text-neutral-400 hover:text-white light:hover:text-neutral-900 px-3 py-2.5 rounded-xl transition-all duration-150"
+                      style={{ borderColor: 'var(--border)' }}
+                    >
+                      <GitHubIcon /> GitHub
+                    </a>
+                  </div>
                 </div>
 
                 {/* Cargos-alvo */}
-                <div className="flex flex-wrap items-center gap-2 mt-5">
-                  <span className="text-[11px] font-black text-neutral-700 light:text-neutral-500 uppercase tracking-[0.18em] mr-1 shrink-0">
-                    Aberto a:
-                  </span>
-                  {targetRoles.map(r => (
-                    <span
-                      key={r}
-                      className="text-xs font-medium px-3 py-1 rounded-lg text-neutral-500 light:text-neutral-600"
-                      style={{ border: '1px solid var(--border)', background: 'var(--bg)' }}
-                    >
-                      {r}
-                    </span>
-                  ))}
-                </div>
+                <p className="text-sm text-neutral-600 light:text-neutral-500 mt-5">
+                  Aberto a: {targetRoles.join(' · ')}
+                </p>
 
                 {/* KPI strip — mobile only */}
                 <div
@@ -781,14 +904,12 @@ export default function App() {
                   style={{ borderTop: '1px solid var(--border)' }}
                 >
                   {kpis.map(({ value, label, Icon }) => (
-                    <div key={value} className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center flex-shrink-0">
-                        <Icon size={15} className="text-orange-400" />
+                    <div key={value} className="flex flex-col items-center justify-center text-center p-3 rounded-2xl min-h-[90px]" style={{ border: '1px solid var(--border)', background: 'var(--surface)' }}>
+                      <div className="w-8 h-8 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center mb-2">
+                        <Icon size={14} className="text-orange-400" />
                       </div>
-                      <div>
-                        <p className="text-xl font-black text-white light:text-neutral-900 leading-none">{value}</p>
-                        <p className="text-xs text-neutral-600 light:text-neutral-500 font-medium mt-0.5 leading-tight">{label}</p>
-                      </div>
+                      <p className="text-xl font-black text-white light:text-neutral-900 leading-none"><KpiNumber value={value} /></p>
+                      <p className="text-[11px] text-neutral-600 light:text-neutral-500 font-medium mt-1 leading-tight">{label}</p>
                     </div>
                   ))}
                 </div>
@@ -808,7 +929,7 @@ export default function App() {
                     <div className="w-8 h-8 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center mb-2">
                       <Icon size={14} className="text-orange-400" />
                     </div>
-                    <p className="text-3xl font-black text-white light:text-neutral-900 leading-none">{value}</p>
+                    <p className="text-3xl font-black text-white light:text-neutral-900 leading-none"><KpiNumber value={value} /></p>
                     <p className="text-[11px] text-neutral-600 light:text-neutral-500 font-medium mt-1.5 leading-tight max-w-[110px]">{label}</p>
                   </div>
                 ))}
@@ -820,10 +941,13 @@ export default function App() {
 
         {/* ── Sobre ─────────────────────────────────────────────────────── */}
         <section id="sobre" className="max-w-6xl mx-auto px-5 py-6 scroll-mt-20">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            <div className="md:col-span-2"><SectionLabel>Sobre</SectionLabel></div>
-            <div><SectionLabel>Perfil</SectionLabel></div>
+          {/* Labels desktop: lado a lado */}
+          <div className="hidden md:flex gap-4 mb-4">
+            <div className="flex-[2]"><SectionLabel>Sobre</SectionLabel></div>
+            <div className="flex-1"><SectionLabel>Perfil</SectionLabel></div>
           </div>
+          {/* Label Sobre mobile */}
+          <div className="md:hidden mb-4"><SectionLabel>Sobre</SectionLabel></div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
             <div className={`md:col-span-2 ${card} p-8 reveal`} style={cardStyle}>
               <div>
@@ -842,24 +966,12 @@ export default function App() {
                 >
                   {sobreExpanded ? 'ler menos' : 'ler mais'}
                 </button>
-                <div className="mt-5 pt-5" style={{ borderTop: '1px solid var(--border)' }}>
-                  <p className="text-[11px] font-black text-orange-500/40 uppercase tracking-[0.2em] mb-3">Aberto a</p>
-                  <div className="flex flex-wrap gap-2">
-                    {['Squad Leader', 'Scrum Master', 'Technical Product Owner', 'Delivery Manager', 'Product Analyst Sênior'].map(tag => (
-                      <span
-                        key={tag}
-                        className="text-xs font-medium px-3 py-1 rounded-lg text-neutral-400 light:text-neutral-600"
-                        style={{ border: '1px solid var(--border)', background: 'var(--bg)' }}
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
               </div>
 
             </div>
 
+            {/* Label Perfil mobile: aparece entre os cards */}
+            <div className="md:hidden -mb-2 mt-2"><SectionLabel>Perfil</SectionLabel></div>
             <div className={`${card} p-7 reveal reveal-d1`} style={cardStyle}>
               <div className="space-y-0">
                 {[
@@ -867,12 +979,10 @@ export default function App() {
                   { k: 'Localização', v: 'Santo André, SP' },
                   { k: 'Status', v: 'Aberto a oportunidades' },
                   { k: 'Email', v: 'victor.tarriga@gmail.com' },
-                  { k: 'LinkedIn', v: '/in/victortarriga' },
-                  { k: 'GitHub', v: '/victortarriga' },
                 ].map(({ k, v }) => (
                   <div key={k} className="py-3" style={{ borderBottom: '1px solid var(--border)' }}>
                     <p className="text-[11px] text-neutral-700 light:text-neutral-500 font-black uppercase tracking-wide">{k}</p>
-                    <p className="text-xs text-neutral-300 light:text-neutral-700 font-medium mt-0.5 truncate">{v}</p>
+                    <p className="text-xs text-neutral-300 light:text-neutral-700 font-medium mt-0.5 break-words overflow-hidden">{v}</p>
                   </div>
                 ))}
               </div>
@@ -888,68 +998,126 @@ export default function App() {
               {experiences.map((exp, i) => (
                 <div
                   key={i}
-                  className={`relative grid grid-cols-1 md:grid-cols-[190px_1fr] gap-4 md:gap-10 pb-10 last:pb-0 reveal reveal-d${Math.min(i + 1, 4)} ${
+                  className={`relative grid grid-cols-1 md:grid-cols-[220px_1fr] gap-4 md:gap-10 pb-10 last:pb-0 reveal reveal-d${Math.min(i + 1, 4)} ${
                     exp.compact ? 'opacity-35 hover:opacity-55 transition-opacity' : ''
                   }`}
                 >
                   {/* Timeline line */}
                   {i < experiences.length - 1 && (
                     <div
-                      className="hidden md:block absolute left-[190px] top-3 bottom-0 w-px"
+                      className="hidden md:block absolute left-[220px] top-3 bottom-0 w-px"
                       style={{ background: 'linear-gradient(to bottom, rgba(234,88,12,0.25), transparent)' }}
                     />
                   )}
                   {/* Timeline dot */}
                   <div
-                    className={`hidden md:flex absolute left-[187px] top-[9px] w-2 h-2 rounded-full ${
+                    className={`hidden md:flex absolute left-[217px] top-[9px] w-2 h-2 rounded-full ${
                       exp.current ? 'ring-4 ring-orange-500/15' : ''
                     }`}
                     style={{ background: exp.current ? '#f97316' : 'var(--border)' }}
                   />
 
-                  {/* Meta */}
-                  <div className="flex flex-row md:flex-col gap-2 items-start md:items-end md:text-right md:pt-1 md:pr-3">
-                    <span className="text-xs font-mono text-neutral-600 light:text-neutral-500 leading-relaxed">{exp.period}</span>
-                    {exp.current && (
-                      <span className="inline-flex items-center gap-1.5 text-[11px] text-emerald-400/90 border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-0.5 rounded-full font-semibold">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        atual
+                  {/* Meta — company name + period + tags (unified for all entries) */}
+                  <div className="flex flex-col gap-1.5 items-start md:items-end md:text-right md:pt-1 md:pr-3">
+                    <p className={`font-bold text-sm leading-snug ${exp.compact ? 'text-neutral-500' : 'text-orange-400'}`}>
+                      {exp.company}
+                    </p>
+                    {'subroles' in exp && (
+                      <span className="text-[11px] font-mono text-neutral-600 light:text-neutral-500 md:whitespace-nowrap">
+                        {exp.period}
                       </span>
                     )}
-                    {exp.badge && (
-                      <span className="text-[11px] text-orange-400/80 border border-orange-500/20 bg-orange-500/10 px-2.5 py-0.5 rounded-full font-semibold">
-                        {exp.badge}
-                      </span>
-                    )}
+                    {/* Tags — row on mobile, column on desktop */}
+                    <div className="flex flex-row flex-wrap items-start md:flex-col md:items-end gap-1.5">
+                      {exp.current && (
+                        <span className="inline-flex items-center gap-1.5 text-[11px] text-emerald-400/90 border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-0.5 rounded-full font-semibold">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                          atual
+                        </span>
+                      )}
+                      {exp.badge && exp.badge.split(' · ').map((part, pi) => (
+                        <span key={pi} className="text-[11px] text-orange-400/80 border border-orange-500/20 bg-orange-500/10 px-2.5 py-0.5 rounded-full font-semibold">
+                          {part}
+                        </span>
+                      ))}
+                      {(exp as { contract?: string | null }).contract && (
+                        <span className="text-[11px] text-orange-400/80 border border-orange-500/20 bg-orange-500/10 px-2.5 py-0.5 rounded-full font-semibold">
+                          {(exp as { contract?: string | null }).contract}
+                        </span>
+                      )}
+                    </div>
                   </div>
 
-                  {/* Content */}
-                  <div
-                    className={`pl-5 ${exp.compact ? 'border-l border-neutral-800' : 'border-l-2 border-orange-500/40 hover:border-orange-500/70 transition-colors duration-200'}`}
-                  >
-                    <h3
-                      className={`font-black leading-tight ${
-                        exp.compact
-                          ? 'text-sm text-neutral-600'
-                          : 'text-white light:text-neutral-900 text-xl md:text-2xl'
-                      }`}
-                    >
-                      {exp.role}
-                    </h3>
-                    <p className="text-orange-400 text-sm font-semibold mt-1 mb-4">{exp.company}</p>
-                    {exp.compact ? (
-                      <p className="text-neutral-600 text-sm italic">{exp.bullets[0]}</p>
-                    ) : (
-                      <ul className="space-y-2">
-                        {exp.bullets.map((b, j) => (
-                          <li key={j} className="flex gap-2.5 text-[14px] text-neutral-400 light:text-neutral-600 leading-relaxed">
-                            <span className="text-orange-500/50 shrink-0 mt-[7px] text-[6px]">●</span>
-                            {b}
-                          </li>
+                  {/* Content — roles only (company moved to left) */}
+                  {'subroles' in exp ? (
+                    /* ── Multi-role (OTG style) ── */
+                    <div className="pl-5 border-l-2 border-orange-500/40 hover:border-orange-500/70 transition-colors duration-200">
+                      <div className="space-y-0">
+                        {(exp.subroles as { role: string; period: string; badge: string | null; bullets: string[] }[]).map((sub, si) => (
+                          <div key={si} className="pb-6 last:pb-0">
+                            {si > 0 && (
+                              <div className="flex items-center gap-2 pb-5">
+                                <ChevronDown size={12} className="text-orange-500/35 shrink-0" />
+                                <div className="flex-1 border-t border-dashed border-orange-500/15" />
+                              </div>
+                            )}
+                            <h3 className="text-white light:text-neutral-900 font-bold text-base leading-snug">{sub.role}</h3>
+                            <div className="flex flex-wrap items-center gap-2 mt-1.5 mb-3">
+                              <span className="text-[11px] font-mono text-neutral-600">{sub.period}</span>
+                              {sub.badge && (
+                                <span className="text-[10px] text-orange-400/70 border border-orange-500/15 bg-orange-500/8 px-2 py-0.5 rounded-full font-semibold">
+                                  {sub.badge}
+                                </span>
+                              )}
+                            </div>
+                            <ul className="space-y-2">
+                              {sub.bullets.map((b, bi) => (
+                                <li key={bi} className="flex gap-2.5 text-[14px] text-neutral-400 light:text-neutral-600 leading-relaxed">
+                                  <span className="text-orange-500/40 shrink-0 mt-[7px] text-[6px]">●</span>
+                                  {b}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
                         ))}
-                      </ul>
-                    )}
-                  </div>
+                      </div>
+                    </div>
+                  ) : (
+                    /* ── Single role ── */
+                    <div
+                      className={`pl-5 ${exp.compact ? 'border-l border-neutral-800' : 'border-l-2 border-orange-500/40 hover:border-orange-500/70 transition-colors duration-200'}`}
+                    >
+                      <h3
+                        className={`font-black leading-tight ${
+                          exp.compact
+                            ? 'text-sm text-neutral-600'
+                            : 'text-white light:text-neutral-900 text-base md:text-lg'
+                        }`}
+                      >
+                        {exp.role}
+                      </h3>
+                      <div className="flex flex-wrap items-center gap-2 mt-1.5 mb-4">
+                        <span className="text-[11px] font-mono text-neutral-600">{exp.period}</span>
+                        {(exp as { loc?: string | null }).loc && (
+                          <span className="text-[10px] text-orange-400/70 border border-orange-500/15 bg-orange-500/8 px-2 py-0.5 rounded-full font-semibold">
+                            {(exp as { loc?: string | null }).loc}
+                          </span>
+                        )}
+                      </div>
+                      {exp.compact ? (
+                        <p className="text-neutral-600 text-sm italic">{exp.bullets[0]}</p>
+                      ) : (
+                        <ul className="space-y-2">
+                          {exp.bullets.map((b, j) => (
+                            <li key={j} className="flex gap-2.5 text-[14px] text-neutral-400 light:text-neutral-600 leading-relaxed">
+                              <span className="text-orange-500/50 shrink-0 mt-[7px] text-[6px]">●</span>
+                              {b}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -979,12 +1147,19 @@ export default function App() {
         <section id="skills" className="max-w-6xl mx-auto px-5 py-6 scroll-mt-20">
           <div className="mb-4"><SectionLabel>Habilidades</SectionLabel></div>
           <div className="relative" style={{ overflow: 'visible' }}>
-            <div className={`${card} w-full p-6`} style={cardStyle}>
-              <div style={{ opacity: skillVisible ? 1 : 0, transition: 'opacity 0.15s' }}>
+            <div
+              className={`${card} w-full p-6`}
+              style={{ ...cardStyle, minHeight: isMobile ? '280px' : '210px', overflow: 'hidden', touchAction: 'pan-y' }}
+              {...skillSwipe}
+            >
+              <div
+                key={skillPage}
+                className={`carousel-${skillDir}`}
+              >
                 <p className="text-[11px] font-black text-neutral-700 light:text-neutral-500 uppercase tracking-[0.2em] mb-5">
                   {skillGroups[skillPage].label}
                 </p>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap items-start content-start gap-2">
                   {skillGroups[skillPage].skills.map(skill => (
                     <span
                       key={skill}
@@ -996,31 +1171,32 @@ export default function App() {
                   ))}
                 </div>
               </div>
-              <div className="flex justify-center gap-2 mt-6">
-                {skillGroups.map((_, p) => (
-                  <button
-                    key={p}
-                    onClick={() => goToSkillPage(p)}
-                    className={`w-1.5 h-1.5 rounded-full transition-colors duration-200 ${p === skillPage ? 'bg-orange-500' : 'bg-neutral-700 hover:bg-neutral-500'}`}
-                    aria-label={`Página ${p + 1}`}
-                  />
-                ))}
-              </div>
             </div>
             <button
-              onClick={() => goToSkillPage((skillPage + skillGroups.length - 1) % skillGroups.length)}
+              onClick={() => goToSkillPage((skillPage + skillGroups.length - 1) % skillGroups.length, 'prev')}
               className="absolute left-1 md:-left-12 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white shadow-lg transition-colors duration-150 bg-neutral-800/90 hover:bg-orange-500 z-10"
               aria-label="Anterior"
             >
               <ChevronLeft size={16} />
             </button>
             <button
-              onClick={() => goToSkillPage((skillPage + 1) % skillGroups.length)}
+              onClick={() => goToSkillPage((skillPage + 1) % skillGroups.length, 'next')}
               className="absolute right-1 md:-right-12 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white shadow-lg transition-colors duration-150 bg-neutral-800/90 hover:bg-orange-500 z-10"
               aria-label="Próxima"
             >
               <ChevronRight size={16} />
             </button>
+          </div>
+          <div className="flex items-center justify-center gap-2 mt-5">
+            {skillGroups.map((_, p) => (
+              <button
+                key={p}
+                onClick={() => goToSkillPage(p, p > skillPage ? 'next' : 'prev')}
+                className={`w-1.5 h-1.5 rounded-full transition-colors duration-200 ${p === skillPage ? 'bg-orange-500' : 'bg-neutral-700 hover:bg-neutral-500'}`}
+                aria-label={`Página ${p + 1}`}
+              />
+            ))}
+            <span className="text-[11px] text-neutral-700 font-mono ml-1 tabular-nums">{skillPage + 1}/{skillGroups.length}</span>
           </div>
         </section>
 
@@ -1031,10 +1207,13 @@ export default function App() {
             <span className="text-xs font-mono text-neutral-700">29 total</span>
           </div>
           <div className="relative" style={{ overflow: 'visible' }}>
-            <div className={`${card} w-full p-6`} style={cardStyle}>
-              <div style={{ opacity: certVisible ? 1 : 0, transition: 'opacity 0.15s' }}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                  {certifications.slice(certPage * 6, certPage * 6 + 6).map((cert, i) => (
+            <div className={`${card} w-full p-6`} style={{ ...cardStyle, minHeight: isMobile ? '360px' : '310px', overflow: 'hidden', touchAction: 'pan-y' }} {...certSwipe}>
+              <div
+                key={certPage}
+                className={`carousel-${certDir}`}
+              >
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {certifications.slice(certPage * certsPerPage, certPage * certsPerPage + certsPerPage).map((cert, i) => (
                     <div
                       key={i}
                       className="p-px rounded-2xl hover:scale-[1.01] transition-transform duration-200"
@@ -1056,31 +1235,32 @@ export default function App() {
                   ))}
                 </div>
               </div>
-              <div className="flex justify-center gap-2 mt-6">
-                {Array.from({ length: CERT_PAGES }, (_, p) => (
-                  <button
-                    key={p}
-                    onClick={() => goToCertPage(p)}
-                    className={`w-1.5 h-1.5 rounded-full transition-colors duration-200 ${p === certPage ? 'bg-orange-500' : 'bg-neutral-700 hover:bg-neutral-500'}`}
-                    aria-label={`Página ${p + 1}`}
-                  />
-                ))}
-              </div>
             </div>
             <button
-              onClick={() => goToCertPage((certPage + CERT_PAGES - 1) % CERT_PAGES)}
+              onClick={() => goToCertPage((certPage + certTotalPages - 1) % certTotalPages, 'prev')}
               className="absolute left-1 md:-left-12 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white shadow-lg transition-colors duration-150 bg-neutral-800/90 hover:bg-orange-500 z-10"
               aria-label="Anterior"
             >
               <ChevronLeft size={16} />
             </button>
             <button
-              onClick={() => goToCertPage((certPage + 1) % CERT_PAGES)}
+              onClick={() => goToCertPage((certPage + 1) % certTotalPages, 'next')}
               className="absolute right-1 md:-right-12 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white shadow-lg transition-colors duration-150 bg-neutral-800/90 hover:bg-orange-500 z-10"
               aria-label="Próxima"
             >
               <ChevronRight size={16} />
             </button>
+          </div>
+          <div className="flex items-center justify-center gap-2 mt-5">
+            {Array.from({ length: certTotalPages }, (_, p) => (
+              <button
+                key={p}
+                onClick={() => goToCertPage(p, p > certPage ? 'next' : 'prev')}
+                className={`w-1.5 h-1.5 rounded-full transition-colors duration-200 ${p === certPage ? 'bg-orange-500' : 'bg-neutral-700 hover:bg-neutral-500'}`}
+                aria-label={`Página ${p + 1}`}
+              />
+            ))}
+            <span className="text-[11px] text-neutral-700 font-mono ml-1 tabular-nums">{certPage + 1}/{certTotalPages}</span>
           </div>
         </section>
 
@@ -1092,22 +1272,24 @@ export default function App() {
           </div>
           <div className="relative" style={{ overflow: 'visible' }}>
             <div
-              className="grid md:grid-cols-2 gap-6 w-full"
-              style={{ opacity: recVisible ? 1 : 0, transition: 'opacity 0.15s' }}
+              key={recPage}
+              className={`grid md:grid-cols-2 gap-6 w-full carousel-${recDir}`}
+              style={isMobile ? { touchAction: 'pan-y' } : { minHeight: '420px', touchAction: 'pan-y' }}
+              {...recSwipe}
             >
-              {recommendations.slice(recPage === 3 ? 6 : recPage * 2, recPage === 3 ? 7 : recPage * 2 + 2).map(rec => (
+              {recPageItems.map(rec => (
                 <RecCard key={rec.name} rec={rec} />
               ))}
             </div>
             <button
-              onClick={() => goToRecPage((recPage + 3) % 4)}
+              onClick={() => goToRecPage((recPage + recTotalPages - 1) % recTotalPages, 'prev')}
               className="absolute left-1 md:-left-12 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white shadow-lg transition-colors duration-150 bg-neutral-800/90 hover:bg-orange-500 z-10"
               aria-label="Anterior"
             >
               <ChevronLeft size={16} />
             </button>
             <button
-              onClick={() => goToRecPage((recPage + 1) % 4)}
+              onClick={() => goToRecPage((recPage + 1) % recTotalPages, 'next')}
               className="absolute right-1 md:-right-12 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white shadow-lg transition-colors duration-150 bg-neutral-800/90 hover:bg-orange-500 z-10"
               aria-label="Próxima"
             >
@@ -1115,15 +1297,16 @@ export default function App() {
             </button>
           </div>
           {/* Dots */}
-          <div className="flex justify-center gap-2 mt-5">
-            {[0, 1, 2, 3].map(p => (
+          <div className="flex items-center justify-center gap-2 mt-5">
+            {Array.from({ length: recTotalPages }, (_, p) => (
               <button
                 key={p}
-                onClick={() => goToRecPage(p)}
+                onClick={() => goToRecPage(p, p > recPage ? 'next' : 'prev')}
                 className={`w-1.5 h-1.5 rounded-full transition-colors duration-200 ${p === recPage ? 'bg-orange-500' : 'bg-neutral-700 hover:bg-neutral-500'}`}
                 aria-label={`Página ${p + 1}`}
               />
             ))}
+            <span className="text-[11px] text-neutral-700 font-mono ml-1 tabular-nums">{recPage + 1}/{recTotalPages}</span>
           </div>
         </section>
 
@@ -1177,6 +1360,8 @@ export default function App() {
         </section>
       </main>
 
+      <ShareFAB />
+
       <footer className="max-w-6xl mx-auto px-5 py-6">
         <div
           className="flex items-center justify-between gap-4 flex-wrap pt-6"
@@ -1193,6 +1378,48 @@ export default function App() {
 }
 
 // ─── Components ──────────────────────────────────────────────────────────────
+
+function ScrollToTop() {
+  const [visible, setVisible] = useState(false)
+  useEffect(() => {
+    const check = () => setVisible(window.scrollY > 400)
+    window.addEventListener('scroll', check, { passive: true })
+    return () => window.removeEventListener('scroll', check)
+  }, [])
+  if (!visible) return null
+  return (
+    <button
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      aria-label="Voltar ao topo"
+      className="fixed bottom-6 left-6 z-50 w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110 active:scale-95 text-neutral-400 hover:text-orange-400"
+      style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
+    >
+      <ChevronUp size={18} />
+    </button>
+  )
+}
+
+function ScrollProgress() {
+  const [pct, setPct] = useState(0)
+  useEffect(() => {
+    const update = () => {
+      const { scrollTop, scrollHeight, clientHeight } = document.documentElement
+      setPct(scrollTop / (scrollHeight - clientHeight) * 100)
+    }
+    window.addEventListener('scroll', update, { passive: true })
+    return () => window.removeEventListener('scroll', update)
+  }, [])
+  return (
+    <div
+      className="fixed top-0 left-0 z-[100] h-[2px] bg-orange-500 pointer-events-none"
+      style={{ width: `${pct}%`, transition: 'width 0.1s linear' }}
+    />
+  )
+}
+
+function KpiNumber({ value }: { value: string }) {
+  return <span>{value}</span>
+}
 
 function SectionLabel({ children }: { children: ReactNode }) {
   return (
@@ -1243,6 +1470,7 @@ function RecCard({ rec }: { rec: typeof recommendations[0] }) {
           <img
             src={rec.photo}
             alt={rec.name}
+            loading="lazy"
             onError={() => setImgError(true)}
             className="w-12 h-12 rounded-full object-cover shrink-0 border border-white/10"
           />
@@ -1289,5 +1517,139 @@ function WhatsAppIcon({ size = 14 }: { size?: number }) {
     <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
     </svg>
+  )
+}
+
+function InstagramIcon({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+    </svg>
+  )
+}
+
+function XIcon({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.725-8.817-8.154-10.683h5.439l4.262 5.636 5.23-5.636zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  )
+}
+
+function ShareFAB() {
+  const [open, setOpen] = useState(false)
+  const [linkCopied, setLinkCopied] = useState(false)
+
+  useEffect(() => {
+    if (!open) return
+    const close = (e: MouseEvent) => {
+      if (!(e.target as Element).closest('[data-share-fab]')) setOpen(false)
+    }
+    document.addEventListener('mousedown', close)
+    return () => document.removeEventListener('mousedown', close)
+  }, [open])
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(PORTFOLIO_URL)
+    setLinkCopied(true)
+    setTimeout(() => setLinkCopied(false), 2000)
+    setOpen(false)
+  }
+
+  const shareInstagram = async () => {
+    if (navigator.share) {
+      try { await navigator.share({ title: 'Victor Tarriga', text: SHARE_TEXT, url: PORTFOLIO_URL }) }
+      catch { /* cancelado */ }
+    } else {
+      navigator.clipboard.writeText(PORTFOLIO_URL)
+    }
+    setOpen(false)
+  }
+
+  const options = [
+    {
+      label: 'LinkedIn',
+      href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(PORTFOLIO_URL)}`,
+      bg: '#0A66C2',
+      icon: <LinkedInIcon size={16} />,
+    },
+    {
+      label: 'Twitter / X',
+      href: `https://twitter.com/intent/tweet?url=${encodeURIComponent(PORTFOLIO_URL)}&text=${encodeURIComponent(SHARE_TEXT)}`,
+      bg: '#000000',
+      icon: <XIcon size={16} />,
+    },
+    {
+      label: 'Instagram',
+      onClick: shareInstagram,
+      bg: 'linear-gradient(135deg, #405DE6, #833AB4, #E1306C, #FD1D1D)',
+      icon: <InstagramIcon size={16} />,
+    },
+    {
+      label: 'WhatsApp',
+      href: `https://wa.me/?text=${encodeURIComponent(SHARE_TEXT + '\n' + PORTFOLIO_URL)}`,
+      bg: '#25D366',
+      icon: <WhatsAppIcon size={16} />,
+    },
+    {
+      label: linkCopied ? 'Copiado!' : 'Copiar link',
+      onClick: copyLink,
+      bg: 'var(--surface)',
+      border: 'var(--border-hi)',
+      icon: <Link2 size={16} />,
+    },
+  ] as const
+
+  return (
+    <div data-share-fab className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2.5">
+      {open && (
+        <div className="flex flex-col items-end gap-2 mb-1">
+          {options.map((opt, i) => (
+            <div key={opt.label} className="share-item flex items-center gap-2.5" style={{ animationDelay: `${i * 45}ms` }}>
+              <span className="text-[11px] font-semibold text-white/80 px-2.5 py-1 rounded-lg whitespace-nowrap select-none"
+                style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(8px)' }}>
+                {opt.label}
+              </span>
+              {'href' in opt ? (
+                <a
+                  href={opt.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setOpen(false)}
+                  aria-label={opt.label}
+                  className="w-10 h-10 rounded-full flex items-center justify-center text-white shadow-lg hover:scale-110 active:scale-95 transition-transform duration-150"
+                  style={{ background: opt.bg }}
+                >
+                  {opt.icon}
+                </a>
+              ) : (
+                <button
+                  onClick={opt.onClick}
+                  aria-label={opt.label}
+                  className="w-10 h-10 rounded-full flex items-center justify-center text-neutral-300 shadow-lg hover:scale-110 active:scale-95 transition-transform duration-150"
+                  style={{ background: opt.bg, border: `1px solid ${'border' in opt ? opt.border : 'transparent'}` }}
+                >
+                  {opt.icon}
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+      <button
+        onClick={() => setOpen(o => !o)}
+        aria-label="Compartilhar"
+        aria-expanded={open}
+        className="w-14 h-14 rounded-full flex items-center justify-center text-white transition-all duration-200 hover:scale-105 active:scale-95"
+        style={{
+          background: open ? 'var(--surface)' : '#f97316',
+          border: open ? '1px solid var(--border-hi)' : 'none',
+          boxShadow: open ? 'none' : '0 8px 28px rgba(249,115,22,0.40)',
+          transform: open ? 'rotate(45deg)' : undefined,
+        }}
+      >
+        <Share2 size={22} />
+      </button>
+    </div>
   )
 }

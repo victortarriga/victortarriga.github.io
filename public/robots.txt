@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://victortarriga.github.io/sitemap.xml
