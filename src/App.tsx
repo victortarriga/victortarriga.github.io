@@ -1009,14 +1009,14 @@ export default function App() {
             </div>
             <button
               onClick={() => goToSkillPage((skillPage + skillGroups.length - 1) % skillGroups.length)}
-              className="absolute -left-12 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center text-white shadow-lg transition-colors duration-150 bg-neutral-800/80 hover:bg-orange-500"
+              className="absolute left-1 md:-left-12 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white shadow-lg transition-colors duration-150 bg-neutral-800/90 hover:bg-orange-500 z-10"
               aria-label="Anterior"
             >
               <ChevronLeft size={16} />
             </button>
             <button
               onClick={() => goToSkillPage((skillPage + 1) % skillGroups.length)}
-              className="absolute -right-12 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center text-white shadow-lg transition-colors duration-150 bg-neutral-800/80 hover:bg-orange-500"
+              className="absolute right-1 md:-right-12 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white shadow-lg transition-colors duration-150 bg-neutral-800/90 hover:bg-orange-500 z-10"
               aria-label="Próxima"
             >
               <ChevronRight size={16} />
@@ -1033,7 +1033,7 @@ export default function App() {
           <div className="relative" style={{ overflow: 'visible' }}>
             <div className={`${card} w-full p-6`} style={cardStyle}>
               <div style={{ opacity: certVisible ? 1 : 0, transition: 'opacity 0.15s' }}>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                   {certifications.slice(certPage * 6, certPage * 6 + 6).map((cert, i) => (
                     <div
                       key={i}
@@ -1069,14 +1069,14 @@ export default function App() {
             </div>
             <button
               onClick={() => goToCertPage((certPage + CERT_PAGES - 1) % CERT_PAGES)}
-              className="absolute -left-12 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center text-white shadow-lg transition-colors duration-150 bg-neutral-800/80 hover:bg-orange-500"
+              className="absolute left-1 md:-left-12 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white shadow-lg transition-colors duration-150 bg-neutral-800/90 hover:bg-orange-500 z-10"
               aria-label="Anterior"
             >
               <ChevronLeft size={16} />
             </button>
             <button
               onClick={() => goToCertPage((certPage + 1) % CERT_PAGES)}
-              className="absolute -right-12 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center text-white shadow-lg transition-colors duration-150 bg-neutral-800/80 hover:bg-orange-500"
+              className="absolute right-1 md:-right-12 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white shadow-lg transition-colors duration-150 bg-neutral-800/90 hover:bg-orange-500 z-10"
               aria-label="Próxima"
             >
               <ChevronRight size={16} />
@@ -1101,14 +1101,14 @@ export default function App() {
             </div>
             <button
               onClick={() => goToRecPage((recPage + 3) % 4)}
-              className="absolute -left-12 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center text-white shadow-lg transition-colors duration-150 bg-neutral-800/80 hover:bg-orange-500"
+              className="absolute left-1 md:-left-12 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white shadow-lg transition-colors duration-150 bg-neutral-800/90 hover:bg-orange-500 z-10"
               aria-label="Anterior"
             >
               <ChevronLeft size={16} />
             </button>
             <button
               onClick={() => goToRecPage((recPage + 1) % 4)}
-              className="absolute -right-12 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center text-white shadow-lg transition-colors duration-150 bg-neutral-800/80 hover:bg-orange-500"
+              className="absolute right-1 md:-right-12 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white shadow-lg transition-colors duration-150 bg-neutral-800/90 hover:bg-orange-500 z-10"
               aria-label="Próxima"
             >
               <ChevronRight size={16} />
@@ -1207,7 +1207,7 @@ function RecCard({ rec }: { rec: typeof recommendations[0] }) {
   const [expanded, setExpanded] = useState(false)
   return (
     <div
-      className="flex flex-col rounded-2xl p-6 border hover:border-orange-500/20 transition-colors duration-200"
+      className="flex flex-col rounded-2xl p-6 border hover:border-orange-500/20 transition-colors duration-200 overflow-hidden min-w-0"
       style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
     >
       <div className="flex items-start justify-between mb-3">
@@ -1223,7 +1223,7 @@ function RecCard({ rec }: { rec: typeof recommendations[0] }) {
         </a>
       </div>
       <div className="flex-1">
-        <p className={`text-neutral-300 light:text-neutral-600 text-[13.5px] leading-[1.8] italic ${expanded ? '' : 'line-clamp-6'}`}>
+        <p className={`text-neutral-300 light:text-neutral-600 text-[13.5px] leading-[1.8] italic break-words ${expanded ? '' : 'line-clamp-6'}`}>
           {rec.text}
           <span className="not-italic text-orange-500/60 font-serif ml-0.5" style={{ fontSize: '2em', lineHeight: 1, verticalAlign: '-0.15em' }}>"</span>
         </p>
