@@ -689,11 +689,16 @@ export default function App() {
                 {/* Nome — linha única, pb-3 garante espaço para descenders */}
                 <div className="pb-3 mb-2">
                   <h1
-                    className={`text-4xl md:text-5xl font-black tracking-tighter leading-[1.1] bg-clip-text text-transparent bg-gradient-to-br ${
-                      isDark
-                        ? 'from-white via-neutral-100 to-neutral-500'
-                        : 'from-neutral-900 via-neutral-700 to-neutral-500'
-                    }`}
+                    className="text-4xl md:text-5xl font-black tracking-tighter leading-[1.1]"
+                    style={{
+                      background: isDark
+                        ? 'linear-gradient(135deg, #ffffff 0%, #f5f5f5 40%, #737373 100%)'
+                        : 'linear-gradient(135deg, #171717 0%, #404040 40%, #737373 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      backgroundClip: 'text',
+                      color: isDark ? '#ffffff' : '#171717',
+                    }}
                   >
                     Victor Hugo Tarriga Gomes
                   </h1>

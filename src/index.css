@@ -1,7 +1,8 @@
 @import "tailwindcss";
+@import "@fontsource-variable/inter";
 
 @theme {
-  --font-family-sans: 'Inter', system-ui, sans-serif;
+  --font-family-sans: 'Inter Variable', 'Inter', system-ui, sans-serif;
 }
 
 /* ─── Light/dark theme variant ─────────────────────────────────────────────── */
