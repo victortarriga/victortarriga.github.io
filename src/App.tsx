@@ -1028,7 +1028,7 @@ export default function App() {
                       </span>
                     )}
                     {/* Tags — row on mobile, column on desktop */}
-                    <div className="flex flex-row flex-wrap items-start md:flex-col md:items-end gap-1.5">
+                    <div className="flex flex-row flex-wrap md:flex-col items-start md:items-end gap-1.5">
                       {exp.current && (
                         <span className="inline-flex items-center gap-1.5 text-[11px] text-emerald-400/90 border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-0.5 rounded-full font-semibold">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
