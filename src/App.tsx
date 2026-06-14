@@ -28,10 +28,10 @@ const kpis: { value: string; label: string; Icon: LucideIcon }[] = [
 
 const targetRoles = [
   'Squad Leader',
-  'Scrum Master',
-  'Technical Product Owner',
+  'Head of Delivery',
+  'Technical Product Manager',
   'Delivery Manager',
-  'Product Analyst Sênior',
+  'Agile Coach',
 ]
 
 function calcPeriod(startLabel: string, startYear: number, startMonth: number): string {
@@ -234,14 +234,15 @@ const experiences = [
 const education = [
   { degree: 'Análise e Desenvolvimento de Sistemas', school: 'Faculdade Impacta Tecnologia', period: '2019 — 2021' },
   { degree: 'Ciências Contábeis', school: 'Anhanguera Educacional', period: '2015 — 2019' },
-  { degree: 'CST, Music Performance, General', school: 'Fundação das Artes de São Caetano do Sul', period: 'jan/2010 — em andamento' },
+  { degree: 'CST, Music Performance, General', school: 'Fundação das Artes de São Caetano do Sul', period: 'jan/2010 — não concluído' },
 ]
 
 
 const skillGroups = [
-  { label: 'Metodologias & Gestão', skills: ['Scrum', 'Kanban', 'Design Thinking', 'ITIL', 'DevOps', 'OKRs', 'PMBOK', 'Lean', 'PDCA'] },
-  { label: 'Produto & Liderança', skills: ['Product Owner', 'Squad Leader', 'Scrum Master', 'Delivery Manager', 'Backlog', 'User Stories', 'Roadmap', 'KPIs', 'Dashboards'] },
-  { label: 'Tecnologia & Ferramentas', skills: ['Azure DevOps', 'GitHub', 'VTEX', 'SAP', 'React', 'TypeScript', 'Vite', 'Supabase', 'SQL', 'Python', 'Google Analytics'] },
+  { label: 'Metodologias & Gestão', skills: ['Scrum', 'Kanban', 'Design Thinking', 'ITIL', 'DevOps', 'OKRs', 'PMBOK', 'Lean', 'PDCA', 'SAFe', 'XP', 'MoSCoW', 'RICE', 'A/B Testing', 'Gestão ágil de projetos', 'Melhoria contínua'] },
+  { label: 'Produto & Estratégia', skills: ['Roadmap de Produto', 'Refinamento de Backlog', 'User Stories', 'MVPs', 'Estratégia de Produtos', 'Planejamento de Produtos', 'Inovação de Produtos', 'Definição de Requisitos', 'Mapeamento de Jornada do Cliente', 'Design de Proposta de Valor', 'Go-to-Market', 'Análise de Mercado', 'Personas', 'Gestão de Ciclo de Vida do Produto', 'KPIs', 'Web Analytics'] },
+  { label: 'Ferramentas & Tecnologia', skills: ['Azure DevOps', 'Figma', 'JIRA', 'Asana', 'Git', 'Amazon Web Services', 'Google Cloud Platform', 'SAP ERP', 'SQL', 'Python', 'n8n', 'ClickUp'] },
+  { label: 'Liderança & Soft Skills', skills: ['Gestão de Times', 'Facilitação de Squads', 'Negociação', 'Priorização de Tarefas', 'Alinhamento de Estratégia', 'Gestão de Riscos', 'Transformação Digital', 'UX Design', 'Benchmarking Internacional'] },
 ]
 
 const certifications = [
@@ -400,7 +401,7 @@ async function downloadCV() {
   y = 20
   txt('VICTOR HUGO TARRIGA GOMES', 17, 'bold', '#111111')
   gap(1)
-  txt('Squad Leader · Scrum Master · Product Owner Sênior', 10, 'normal', '#555555')
+  txt('Squad Leader · Head of Delivery · Technical Product Manager', 10, 'normal', '#555555')
   gap(1)
   txt('Grupo OTG  |  Santo André, SP  |  Brasil', 9, 'normal', '#888888')
 
@@ -1149,21 +1150,21 @@ export default function App() {
           <div className="relative" style={{ overflow: 'visible' }}>
             <div
               className={`${card} w-full p-6`}
-              style={{ ...cardStyle, minHeight: isMobile ? '280px' : '210px', overflow: 'hidden', touchAction: 'pan-y' }}
+              style={{ ...cardStyle, minHeight: isMobile ? '220px' : '180px', overflow: 'hidden', touchAction: 'pan-y' }}
               {...skillSwipe}
             >
               <div
                 key={skillPage}
                 className={`carousel-${skillDir}`}
               >
-                <p className="text-[11px] font-black text-neutral-700 light:text-neutral-500 uppercase tracking-[0.2em] mb-5">
+                <p className="text-[11px] font-black text-neutral-700 light:text-neutral-500 uppercase tracking-[0.2em] mb-4">
                   {skillGroups[skillPage].label}
                 </p>
-                <div className="flex flex-wrap items-start content-start gap-2">
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'flex-start', alignContent: 'flex-start' }}>
                   {skillGroups[skillPage].skills.map(skill => (
                     <span
                       key={skill}
-                      className="text-sm font-medium px-4 py-2 rounded-xl text-neutral-300 light:text-neutral-600 hover:text-orange-300 hover:border-orange-500/40 hover:bg-orange-500/[0.06] transition-all duration-150 cursor-default"
+                      className="text-xs font-medium px-3 py-1.5 rounded-xl text-neutral-300 light:text-neutral-600 hover:text-orange-300 hover:border-orange-500/40 hover:bg-orange-500/[0.06] transition-all duration-150 cursor-default"
                       style={{ border: '1px solid var(--border)', background: 'var(--bg)' }}
                     >
                       {skill}
@@ -1207,26 +1208,26 @@ export default function App() {
             <span className="text-xs font-mono text-neutral-700">29 total</span>
           </div>
           <div className="relative" style={{ overflow: 'visible' }}>
-            <div className={`${card} w-full p-6`} style={{ ...cardStyle, minHeight: isMobile ? '360px' : '310px', overflow: 'hidden', touchAction: 'pan-y' }} {...certSwipe}>
+            <div className={`${card} w-full p-5`} style={{ ...cardStyle, minHeight: isMobile ? '300px' : '260px', overflow: 'hidden', touchAction: 'pan-y' }} {...certSwipe}>
               <div
                 key={certPage}
                 className={`carousel-${certDir}`}
               >
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
                   {certifications.slice(certPage * certsPerPage, certPage * certsPerPage + certsPerPage).map((cert, i) => (
                     <div
                       key={i}
-                      className="p-px rounded-2xl hover:scale-[1.01] transition-transform duration-200"
+                      className="p-px rounded-xl hover:scale-[1.01] transition-transform duration-200"
                       style={{ background: 'linear-gradient(135deg, rgba(234,88,12,0.3), rgba(255,255,255,0.04))' }}
                     >
-                      <div className="h-full rounded-[15px] p-5" style={{ background: 'var(--surface)' }}>
-                        <div className="flex items-start gap-3">
-                          <span className="text-orange-500/60 text-sm mt-0.5 shrink-0">★</span>
+                      <div className="h-full rounded-[11px] p-3.5" style={{ background: 'var(--surface)' }}>
+                        <div className="flex items-start gap-2">
+                          <span className="text-orange-500/60 text-xs mt-0.5 shrink-0">★</span>
                           <div className="min-w-0">
-                            <p className="text-white light:text-neutral-900 font-semibold text-sm leading-snug">{cert.name}</p>
-                            <div className="flex items-center justify-between mt-3 gap-2">
-                              <span className="text-xs text-orange-400/60 truncate font-medium">{cert.issuer}</span>
-                              <span className="text-xs font-mono text-neutral-700">{cert.year}</span>
+                            <p className="text-white light:text-neutral-900 font-semibold text-xs leading-snug">{cert.name}</p>
+                            <div className="flex items-center justify-between mt-2 gap-1.5">
+                              <span className="text-[10px] text-orange-400/60 truncate font-medium">{cert.issuer}</span>
+                              <span className="text-[10px] font-mono text-neutral-700 shrink-0">{cert.year}</span>
                             </div>
                           </div>
                         </div>
